@@ -1,7 +1,7 @@
 # Gaje Project
 
 **Author:** 0x6ick  
-**Tagline:** Random tools, ongoing soon. 
+**Tagline:** Random tools, ongoing. 
 
 ## Description
 This project was born from our curiosity and boredom to experiment with various things.  
@@ -9,7 +9,7 @@ Some are single-file utilities, some may grow into bigger projects.
 Expect randomness and creativity here — tools come and go.
 
 ## Current Tools
-- **BengkelSempak** — single-file PHP tool for domain grabbing, extension generation, and mass checking. (Check its folder for README & details)  
+- **BengkelSempak** — single-file PHP tool for domain grabbing, extension generator, and mass checking. (Check its folder for README & details)  
 - More tools will be added as I develop them.
 
 ## Tips
