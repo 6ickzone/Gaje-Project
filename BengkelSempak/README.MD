@@ -42,7 +42,7 @@ Detected results will be saved in `found.txt`.
 - Can be used as a portable internal debugging tool.
 
 ## License
-WTFPL — do whatever you want with it, responsibly.
+WTFPL — You just DO WHAT THE FUCK YOU WANT TO
 
 ## Quote
 "Nothing is useless — even underwear can be useful."
