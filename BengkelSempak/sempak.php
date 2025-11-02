@@ -2,13 +2,7 @@
 /* 
 BengkelSempak — Gaje Project
 Author: 0x6ick
-File: sempak.php
 Tagline: Nothing is useless — even underwear can be useful.
-
-Features:
-- Domain Grabber
-- EXT Generator
-- Mass Checker
 
 License: WTFPL v2
 "You just DO WHAT THE FUCK YOU WANT TO"
