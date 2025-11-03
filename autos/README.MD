@@ -26,8 +26,8 @@ Simple, flexible, and fast.
 - sempax.php7  
 
 ---
-#lil.php
-teen
+# lilcrot.php
+crot dikit
 ## Usage
 Just use:
 ```copy all
