@@ -1,9 +1,8 @@
-# Priv8 Shell Explore
+# Kerang
 
-**Priv8 Shell Explore** is a lightweight PHP file manager & command executor — built for simple control, fast response, and clean dark UI.
 
 ###  Main File
-`explo.php`
+`explo.php` **Priv8 Shell Explore** is a lightweight PHP file manager & command executor — built for simple control, fast response, and clean dark UI.
 
 ---
 
