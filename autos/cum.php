@@ -60,22 +60,22 @@ function deployFolder($folderName, $files) {
                     $scheme = $_SERVER['REQUEST_SCHEME'] ?? 'https';
 
                     if ($filePathReal && $docRootReal && str_starts_with($filePathReal, $docRootReal)) {
-                        // masih di root web utama
+                        // root
                         $relativePath = '/' . ltrim(str_replace($docRootReal, '', $filePathReal), '/');
                         $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
                         $url = "$scheme://$host$relativePath";
                     } else {
-                        // ambil domain/subdomain dari nama folder yang mirip domain
+                        // domain/subdomain look+like
                         $maybeDomain = basename($htmlPath);
                         if (preg_match('/^[a-z0-9.-]+\.[a-z]{2,}$/i', $maybeDomain)) {
                             $url = "$scheme://$maybeDomain/$folderName/$fileName";
                         } else {
-                            // kalau belum juga, cek parent folder
+                            //parent folder
                             $parent = basename(dirname($htmlPath));
                             if (preg_match('/^[a-z0-9.-]+\.[a-z]{2,}$/i', $parent)) {
                                 $url = "$scheme://$parent/$folderName/$fileName";
                             } else {
-                                // fallback terakhir: path fisik
+                                // path fisik
                                 $url = $filePathReal;
                             }
                         }
